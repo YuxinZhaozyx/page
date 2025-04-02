@@ -182,21 +182,47 @@
         // Function to create an oscillator for a note using Web Audio API
         function createOscillator(frequency) {
             const context = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = context.createOscillator();
-            oscillator.type = 'triangle'; // Change type to triangle wave for smoother sound
-            oscillator.frequency.setValueAtTime(frequency, context.currentTime);
+            const oscillators = [];
+            const envelope = context.createGain();
 
-            // Create a low-pass filter
+            // Main Oscillator
+            const mainOscillator = context.createOscillator();
+            mainOscillator.type = 'triangle'; // Triangle wave for base sound
+            mainOscillator.frequency.setValueAtTime(frequency, context.currentTime);
+            mainOscillator.connect(envelope);
+            oscillators.push(mainOscillator);
+
+            // Harmonics
+            const harmonics = [2, 3, 4]; // Simple harmonic series
+            harmonics.forEach((harmonic, index) => {
+                const osc = context.createOscillator();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(frequency * harmonic, context.currentTime);
+                osc.connect(envelope);
+                oscillators.push(osc);
+            });
+
+            // Low-pass Filter
             const filter = context.createBiquadFilter();
             filter.type = 'lowpass';
             filter.frequency.setValueAtTime(1500, context.currentTime); // Set cutoff frequency
 
-            // Connect oscillator to filter and then to destination
-            oscillator.connect(filter);
+            // Envelope Generator
+            envelope.gain.setValueAtTime(0, context.currentTime);
+            envelope.gain.linearRampToValueAtTime(1, context.currentTime + 0.01); // Attack
+            envelope.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 1); // Release
+
+            // Connect nodes
+            envelope.connect(filter);
             filter.connect(context.destination);
 
-            oscillator.start();
-            return { oscillator, context };
+            // Start oscillators
+            oscillators.forEach(osc => {
+                osc.start(context.currentTime);
+                osc.stop(context.currentTime + 1); // Stop after release time
+            });
+
+            return context;
         }
 
         // Map note names to frequencies
@@ -254,7 +280,7 @@
         // Add mouse down and mouse up event listeners to piano keys
         function setupPianoKeys() {
             const keys = document.querySelectorAll('.white-key, .black-key');
-            const oscillators = {};
+            const contexts = {};
 
             keys.forEach(key => {
                 const note = key.getAttribute('data-note');
@@ -283,16 +309,16 @@
             });
 
             function handleKeyDown(note, key) {
-                if (!oscillators[note]) {
-                    oscillators[note] = createOscillator(notes[note]);
+                if (!contexts[note]) {
+                    contexts[note] = createOscillator(notes[note]);
                     key.classList.add(key.classList.contains('white-key') ? 'active-white-key' : 'active-black-key');
                 }
             }
 
             function handleKeyUp(note, key) {
-                if (oscillators[note]) {
-                    oscillators[note].oscillator.stop(oscillators[note].context.currentTime);
-                    delete oscillators[note];
+                if (contexts[note]) {
+                    contexts[note].close();
+                    delete contexts[note];
                     key.classList.remove('active-white-key', 'active-black-key');
                 }
             }
