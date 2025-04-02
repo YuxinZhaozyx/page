@@ -183,7 +183,7 @@
         function createOscillator(frequency) {
             const context = new (window.AudioContext || window.webkitAudioContext)();
             const oscillator = context.createOscillator();
-            oscillator.type = 'sine'; // Change type to triangle wave for smoother sound
+            oscillator.type = 'triangle'; // Change type to triangle wave for smoother sound
             oscillator.frequency.setValueAtTime(frequency, context.currentTime);
 
             // Create a low-pass filter
@@ -254,52 +254,48 @@
         // Add mouse down and mouse up event listeners to piano keys
         function setupPianoKeys() {
             const keys = document.querySelectorAll('.white-key, .black-key');
+            const oscillators = {};
 
             keys.forEach(key => {
-                let oscillatorData;
+                const note = key.getAttribute('data-note');
 
                 key.addEventListener('mousedown', () => {
-                    handleKeyDown(key);
+                    handleKeyDown(note, key);
                 });
 
                 key.addEventListener('mouseup', () => {
-                    handleKeyUp(key);
+                    handleKeyUp(note, key);
                 });
 
                 key.addEventListener('mouseleave', () => {
-                    handleKeyUp(key);
+                    handleKeyUp(note, key);
                 });
 
                 key.addEventListener('touchstart', (event) => {
                     event.preventDefault(); // Prevent default touch behavior
-                    handleKeyDown(key);
+                    handleKeyDown(note, key);
                 }, { passive: false });
 
                 key.addEventListener('touchend', (event) => {
                     event.preventDefault(); // Prevent default touch behavior
-                    handleKeyUp(key);
+                    handleKeyUp(note, key);
                 }, { passive: false });
-
-                function handleKeyDown(key) {
-                    const note = key.getAttribute('data-note');
-                    if (note && notes[note]) {
-                        if (oscillatorData) {
-                            oscillatorData.oscillator.stop(oscillatorData.context.currentTime);
-                            oscillatorData = null;
-                        }
-                        oscillatorData = createOscillator(notes[note]);
-                        key.classList.add(key.classList.contains('white-key') ? 'active-white-key' : 'active-black-key');
-                    }
-                }
-
-                function handleKeyUp(key) {
-                    if (oscillatorData) {
-                        oscillatorData.oscillator.stop(oscillatorData.context.currentTime);
-                        oscillatorData = null;
-                        key.classList.remove('active-white-key', 'active-black-key');
-                    }
-                }
             });
+
+            function handleKeyDown(note, key) {
+                if (!oscillators[note]) {
+                    oscillators[note] = createOscillator(notes[note]);
+                    key.classList.add(key.classList.contains('white-key') ? 'active-white-key' : 'active-black-key');
+                }
+            }
+
+            function handleKeyUp(note, key) {
+                if (oscillators[note]) {
+                    oscillators[note].oscillator.stop(oscillators[note].context.currentTime);
+                    delete oscillators[note];
+                    key.classList.remove('active-white-key', 'active-black-key');
+                }
+            }
         }
 
         window.onload = () => {
