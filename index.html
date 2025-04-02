@@ -71,6 +71,7 @@
         .piano-keys {
             display: flex;
             flex-wrap: nowrap;
+            overflow: hidden;
         }
         h1 {
             font-size: 2em;
@@ -91,6 +92,12 @@
         @keyframes twinkle {
             from { opacity: 0.2; }
             to { opacity: 1; }
+        }
+
+        /* Custom span for specific line breaking */
+        .break-word {
+            word-break: break-all;
+            white-space: pre-wrap; /* Allows manual line breaks with <br> */
         }
     </style>
 </head>
@@ -136,7 +143,7 @@
     <div id="stars"></div>
 
     <div class="container">
-        <h1>欢迎来到八十八键的宇宙</h1>
+        <h1><span class="break-word">欢迎来到<br>八十八键的宇宙</span></h1>
         <p>这使你充满了决心❤</p>
     </div>
     <footer>
