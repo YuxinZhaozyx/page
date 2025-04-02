@@ -183,9 +183,18 @@
         function createOscillator(frequency) {
             const context = new (window.AudioContext || window.webkitAudioContext)();
             const oscillator = context.createOscillator();
-            oscillator.type = 'sine'; // Change type if needed (sine, square, sawtooth)
+            oscillator.type = 'sine'; // Change type to triangle wave for smoother sound
             oscillator.frequency.setValueAtTime(frequency, context.currentTime);
-            oscillator.connect(context.destination);
+
+            // Create a low-pass filter
+            const filter = context.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(1500, context.currentTime); // Set cutoff frequency
+
+            // Connect oscillator to filter and then to destination
+            oscillator.connect(filter);
+            filter.connect(context.destination);
+
             oscillator.start();
             return { oscillator, context };
         }
@@ -245,6 +254,7 @@
         // Add mouse down and mouse up event listeners to piano keys
         function setupPianoKeys() {
             const keys = document.querySelectorAll('.white-key, .black-key');
+
             keys.forEach(key => {
                 let oscillatorData;
 
@@ -269,23 +279,23 @@
                     event.preventDefault(); // Prevent default touch behavior
                     handleKeyUp(key);
                 }, { passive: false });
+
+                function handleKeyDown(key) {
+                    const note = key.getAttribute('data-note');
+                    if (note && notes[note]) {
+                        oscillatorData = createOscillator(notes[note]);
+                        key.classList.add(key.classList.contains('white-key') ? 'active-white-key' : 'active-black-key');
+                    }
+                }
+
+                function handleKeyUp(key) {
+                    if (oscillatorData) {
+                        oscillatorData.oscillator.stop(oscillatorData.context.currentTime);
+                        oscillatorData = null;
+                        key.classList.remove('active-white-key', 'active-black-key');
+                    }
+                }
             });
-        }
-
-        function handleKeyDown(key) {
-            const note = key.getAttribute('data-note');
-            if (note && notes[note]) {
-                oscillatorData = createOscillator(notes[note]);
-                key.classList.add(key.classList.contains('white-key') ? 'active-white-key' : 'active-black-key');
-            }
-        }
-
-        function handleKeyUp(key) {
-            if (oscillatorData) {
-                oscillatorData.oscillator.stop(oscillatorData.context.currentTime);
-                oscillatorData = null;
-                key.classList.remove('active-white-key', 'active-black-key');
-            }
         }
 
         window.onload = () => {
