@@ -179,50 +179,52 @@
             }
         }
 
+        // Create a single global AudioContext instance
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
         // Function to create an oscillator for a note using Web Audio API
         function createOscillator(frequency) {
-            const context = new (window.AudioContext || window.webkitAudioContext)();
             const oscillators = [];
-            const envelope = context.createGain();
+            const envelope = audioContext.createGain();
 
             // Main Oscillator
-            const mainOscillator = context.createOscillator();
+            const mainOscillator = audioContext.createOscillator();
             mainOscillator.type = 'triangle'; // Triangle wave for base sound
-            mainOscillator.frequency.setValueAtTime(frequency, context.currentTime);
+            mainOscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
             mainOscillator.connect(envelope);
             oscillators.push(mainOscillator);
 
             // Harmonics
             const harmonics = [2, 3, 4]; // Simple harmonic series
             harmonics.forEach((harmonic, index) => {
-                const osc = context.createOscillator();
+                const osc = audioContext.createOscillator();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(frequency * harmonic, context.currentTime);
+                osc.frequency.setValueAtTime(frequency * harmonic, audioContext.currentTime);
                 osc.connect(envelope);
                 oscillators.push(osc);
             });
 
             // Low-pass Filter
-            const filter = context.createBiquadFilter();
+            const filter = audioContext.createBiquadFilter();
             filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(1500, context.currentTime); // Set cutoff frequency
+            filter.frequency.setValueAtTime(1500, audioContext.currentTime); // Set cutoff frequency
 
             // Envelope Generator
-            envelope.gain.setValueAtTime(0, context.currentTime);
-            envelope.gain.linearRampToValueAtTime(1, context.currentTime + 0.01); // Attack
-            envelope.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 1); // Release
+            envelope.gain.setValueAtTime(0, audioContext.currentTime);
+            envelope.gain.linearRampToValueAtTime(1, audioContext.currentTime + 0.01); // Attack
+            envelope.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1); // Release
 
             // Connect nodes
             envelope.connect(filter);
-            filter.connect(context.destination);
+            filter.connect(audioContext.destination);
 
             // Start oscillators
             oscillators.forEach(osc => {
-                osc.start(context.currentTime);
-                osc.stop(context.currentTime + 1); // Stop after release time
+                osc.start(audioContext.currentTime);
+                osc.stop(audioContext.currentTime + 1); // Stop after release time
             });
 
-            return context;
+            return envelope;
         }
 
         // Map note names to frequencies
@@ -320,7 +322,9 @@
 
             function handleKeyUp(note, key, event) {
                 if (contexts[note]) {
-                    contexts[note].close();
+                    contexts[note].gain.cancelScheduledValues(audioContext.currentTime);
+                    contexts[note].gain.setValueAtTime(contexts[note].gain.value, audioContext.currentTime);
+                    contexts[note].gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1); // Quick release
                     delete contexts[note];
                     key.classList.remove('active-white-key', 'active-black-key');
                 }
