@@ -283,6 +283,10 @@
                 function handleKeyDown(key) {
                     const note = key.getAttribute('data-note');
                     if (note && notes[note]) {
+                        if (oscillatorData) {
+                            oscillatorData.oscillator.stop(oscillatorData.context.currentTime);
+                            oscillatorData = null;
+                        }
                         oscillatorData = createOscillator(notes[note]);
                         key.classList.add(key.classList.contains('white-key') ? 'active-white-key' : 'active-black-key');
                     }
