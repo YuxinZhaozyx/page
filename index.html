@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简易网站</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+            position: relative;
+        }
+        .container {
+            text-align: center;
+            background-color: transparent;
+            padding: 20px;
+            color: white;
+            // border-radius: 8px;
+            // box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+        }
+        .piano-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #333;
+            overflow: hidden;
+        }
+        .white-key {
+            width: 50px;
+            height: 200px;
+            background-color: white;
+            border: 1px solid black;
+            float: left;
+            margin-right: 2px;
+            position: relative;
+        }
+        .black-key {
+            width: 30px;
+            height: 120px;
+            background-color: black;
+            position: absolute;
+            right: -15px;
+            top: 0;
+            z-index: 1;
+        }
+        .piano-keys {
+            width: 380px; /* Adjust based on the number of keys */
+            margin: auto;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="piano-background">
+        <div class="piano-keys">
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"></div>
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"></div>
+        </div>
+    </div>
+    <div class="container">
+        <h1>欢迎来到八十八键的宇宙</h1>
+        <p>你充满了决心❤</p>
+    </div>
+    <footer>
+        <p>粤ICP备2021172383号-1</p>
+    </footer>
+</body>
+</html>
+
+
+
