@@ -3,45 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>简易网站</title>
+    <title>八十八键宇宙主题网站</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            height: 100vh;
+            background: radial-gradient(circle, #0f0c29, #302b63, #24243e);
+            position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #f4f4f9;
-            position: relative;
+            color: white;
+            overflow: hidden;
         }
         .container {
             text-align: center;
             background-color: transparent;
             padding: 20px;
-            color: white;
-            // border-radius: 8px;
-            // box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             z-index: 1;
+            max-width: 600px; /* Optional: limit the width of the container */
         }
         footer {
             position: fixed;
             bottom: 0;
             width: 100%;
             text-align: center;
-            background-color: #333;
-            color: #fff;
+            background: linear-gradient(to top, rgba(50, 50, 50, 0.7), rgba(0, 0, 0, 0.7)); /* Gradient background */
+            color: white;
             padding: 10px 0;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
         }
         .piano-background {
             position: absolute;
             top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #333;
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto; /* Adjust based on the number of keys */
+            height: 200px;
+            background-color: rgba(0, 0, 0, 0.5);
             overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .white-key {
             width: 50px;
@@ -62,18 +69,59 @@
             z-index: 1;
         }
         .piano-keys {
-            width: 380px; /* Adjust based on the number of keys */
-            margin: auto;
+            display: flex;
+            flex-wrap: nowrap;
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.2em;
+        }
+
+        /* Star styles */
+        .star {
             position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 1s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            from { opacity: 0.2; }
+            to { opacity: 1; }
         }
     </style>
 </head>
 <body>
     <div class="piano-background">
         <div class="piano-keys">
+            <!-- First Octave -->
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"></div>
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"></div>
+            <!-- Second Octave -->
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"></div>
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"></div>
+            <!-- Third Octave -->
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"></div>
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"><div class="black-key"></div></div>
+            <div class="white-key"></div>
+            <!-- Fourth Octave -->
             <div class="white-key"><div class="black-key"></div></div>
             <div class="white-key"><div class="black-key"></div></div>
             <div class="white-key"></div>
@@ -83,13 +131,36 @@
             <div class="white-key"></div>
         </div>
     </div>
+
+    <!-- Stars -->
+    <div id="stars"></div>
+
     <div class="container">
         <h1>欢迎来到八十八键的宇宙</h1>
-        <p>你充满了决心❤</p>
+        <p>这使你充满了决心❤</p>
     </div>
     <footer>
         <p>粤ICP备2021172383号-1</p>
     </footer>
+
+    <script>
+        // Generate random stars
+        function generateStars() {
+            const starContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.top = `${Math.random() * 100}vh`;
+                star.style.left = `${Math.random() * 100}vw`;
+                star.style.width = `${Math.random() * 2 + 1}px`;
+                star.style.height = `${Math.random() * 2 + 1}px`;
+                star.style.animationDuration = `${Math.random() * 2 + 1}s`;
+                starContainer.appendChild(star);
+            }
+        }
+
+        window.onload = generateStars;
+    </script>
 </body>
 </html>
 
