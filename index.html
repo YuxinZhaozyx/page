@@ -249,29 +249,43 @@
                 let oscillatorData;
 
                 key.addEventListener('mousedown', () => {
-                    const note = key.getAttribute('data-note');
-                    if (note && notes[note]) {
-                        oscillatorData = createOscillator(notes[note]);
-                        key.classList.add(key.classList.contains('white-key') ? 'active-white-key' : 'active-black-key');
-                    }
+                    handleKeyDown(key);
                 });
 
                 key.addEventListener('mouseup', () => {
-                    if (oscillatorData) {
-                        oscillatorData.oscillator.stop(oscillatorData.context.currentTime);
-                        oscillatorData = null;
-                        key.classList.remove('active-white-key', 'active-black-key');
-                    }
+                    handleKeyUp(key);
                 });
 
                 key.addEventListener('mouseleave', () => {
-                    if (oscillatorData) {
-                        oscillatorData.oscillator.stop(oscillatorData.context.currentTime);
-                        oscillatorData = null;
-                        key.classList.remove('active-white-key', 'active-black-key');
-                    }
+                    handleKeyUp(key);
                 });
+
+                key.addEventListener('touchstart', (event) => {
+                    event.preventDefault(); // Prevent default touch behavior
+                    handleKeyDown(key);
+                }, { passive: false });
+
+                key.addEventListener('touchend', (event) => {
+                    event.preventDefault(); // Prevent default touch behavior
+                    handleKeyUp(key);
+                }, { passive: false });
             });
+        }
+
+        function handleKeyDown(key) {
+            const note = key.getAttribute('data-note');
+            if (note && notes[note]) {
+                oscillatorData = createOscillator(notes[note]);
+                key.classList.add(key.classList.contains('white-key') ? 'active-white-key' : 'active-black-key');
+            }
+        }
+
+        function handleKeyUp(key) {
+            if (oscillatorData) {
+                oscillatorData.oscillator.stop(oscillatorData.context.currentTime);
+                oscillatorData = null;
+                key.classList.remove('active-white-key', 'active-black-key');
+            }
         }
 
         window.onload = () => {
