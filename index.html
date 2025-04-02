@@ -285,41 +285,47 @@
             keys.forEach(key => {
                 const note = key.getAttribute('data-note');
 
-                key.addEventListener('mousedown', () => {
-                    handleKeyDown(note, key);
+                key.addEventListener('mousedown', (event) => {
+                    handleKeyDown(note, key, event);
                 });
 
-                key.addEventListener('mouseup', () => {
-                    handleKeyUp(note, key);
+                key.addEventListener('mouseup', (event) => {
+                    handleKeyUp(note, key, event);
                 });
 
-                key.addEventListener('mouseleave', () => {
-                    handleKeyUp(note, key);
+                key.addEventListener('mouseleave', (event) => {
+                    handleKeyUp(note, key, event);
                 });
 
                 key.addEventListener('touchstart', (event) => {
                     event.preventDefault(); // Prevent default touch behavior
-                    handleKeyDown(note, key);
+                    handleKeyDown(note, key, event);
                 }, { passive: false });
 
                 key.addEventListener('touchend', (event) => {
                     event.preventDefault(); // Prevent default touch behavior
-                    handleKeyUp(note, key);
+                    handleKeyUp(note, key, event);
                 }, { passive: false });
             });
 
-            function handleKeyDown(note, key) {
+            function handleKeyDown(note, key, event) {
                 if (!contexts[note]) {
                     contexts[note] = createOscillator(notes[note]);
                     key.classList.add(key.classList.contains('white-key') ? 'active-white-key' : 'active-black-key');
                 }
+                if (key.classList.contains('black-key')) {
+                    event.stopPropagation(); // Prevent event from bubbling up to parent white key
+                }
             }
 
-            function handleKeyUp(note, key) {
+            function handleKeyUp(note, key, event) {
                 if (contexts[note]) {
                     contexts[note].close();
                     delete contexts[note];
                     key.classList.remove('active-white-key', 'active-black-key');
+                }
+                if (key.classList.contains('black-key')) {
+                    event.stopPropagation(); // Prevent event from bubbling up to parent white key
                 }
             }
         }
