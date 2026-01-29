@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赞助支持 - 八十八键的宇宙</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle, #0f0c29, #302b63, #24243e) no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            background-color: transparent;
+            padding: 20px;
+            z-index: 1;
+            max-width: 600px;
+        }
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            background: linear-gradient(to top, rgba(50, 50, 50, 0.4), rgba(0, 0, 0, 0.4));
+            color: white;
+            padding: 10px 0;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.2em;
+            margin: 20px 0;
+        }
+        .sponsor-content {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .qr-code {
+            margin: 20px auto;
+            display: block;
+            max-width: 250px;
+        }
+        .thank-you {
+            font-size: 1.4em;
+            margin: 25px 0;
+            color: #FF6666; /* Light pink color from original site */
+        }
+
+        /* Star styles */
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 1s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            from { opacity: 0.2; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Stars -->
+    <div id="stars"></div>
+
+    <div class="container">
+        <div class="sponsor-content">
+            <h1>赞助支持</h1>
+            <p>如果您喜欢我的作品并希望支持我，请扫描下方二维码进行打赏</p>
+            
+            <!-- Placeholder QR code - replace with actual QR code image -->
+            <img src="./image.png" alt="打赏二维码" class="qr-code">
+            
+            <p class="thank-you">感谢您的支持！❤</p>
+            <p>每一份支持都是对我最大的鼓励</p>
+        </div>
+    </div>
+    <footer>
+        <a href="../index.html" style="color:#fff;text-decoration:none;"><p>返回首页</p></a>
+    </footer>
+
+    <script>
+        // Generate random stars
+        function generateStars() {
+            const starContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.top = `${Math.random() * 100}vh`;
+                star.style.left = `${Math.random() * 100}vw`;
+                star.style.width = `${Math.random() * 2 + 1}px`;
+                star.style.height = `${Math.random() * 2 + 1}px`;
+                star.style.animationDuration = `${Math.random() * 2 + 1}s`;
+                starContainer.appendChild(star);
+            }
+        }
+
+        window.onload = () => {
+            generateStars();
+        };
+    </script>
+</body>
+</html>
